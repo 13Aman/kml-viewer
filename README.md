@@ -1,4 +1,4 @@
-Develop a simple React-based webpage with the following functionalities:
+Developed a React-based webpage with the following functionalities:
 
 Upload and Read KML File: The webpage should allow users to upload a KML file and display its contents.
 
