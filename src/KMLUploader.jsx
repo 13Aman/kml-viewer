@@ -22,6 +22,20 @@ export default function KMLUploader({ onKMLParsed, onClearData }) {
     processFile(file);
   };
 
+  const convertGeometryCollectionToMultiLineString = (feature) => {
+    if (feature.geometry.type === "GeometryCollection") {
+      const lineStrings = feature.geometry.geometries.filter((g) => g.type === "LineString");
+  
+      if (lineStrings.length > 0) {
+        feature.geometry = {
+          type: "MultiLineString",
+          coordinates: lineStrings.map((ls) => ls.coordinates),
+        };
+      }
+    }
+    return feature;
+  };
+
   const processFile = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -29,6 +43,9 @@ export default function KMLUploader({ onKMLParsed, onClearData }) {
         const parser = new DOMParser();
         const kml = parser.parseFromString(e.target.result, "text/xml");
         const geoJson = toGeoJSON.kml(kml);
+        // Check and fix any misclassified GeometryCollections
+        geoJson.features = geoJson.features.map(convertGeometryCollectionToMultiLineString);
+
         onKMLParsed(geoJson);
       } catch (error) {
         console.error("Error parsing KML:", error);

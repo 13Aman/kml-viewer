@@ -18,7 +18,6 @@ export default function DetailedTable({ geoJsonData }) {
     const details = geoJsonData.features.reduce((acc, feature) => {
       const type = feature.geometry.type;
       let length = 0;
-      console.log(type);
   
       if (type === "LineString") {
         length = haversineDistance(feature.geometry.coordinates[0], feature.geometry.coordinates[1]);
